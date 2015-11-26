@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plugin id="cordova-plugin-mqtt" version="0.0.1" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+  <name>Cordova Plugin MqTT</name>
+  <description>The new MqTT plugin for Cordova</description>
+  <js-module name="MqTTPlugin" src="www/MqTTPlugin.js">
+    <clobbers target="cordova.plugins.mqtt" />
+  </js-module>
+  <platform name="android">
+    <config-file parent="/*" target="res/xml/config.xml">
+      <feature name="MqTTPlugin">
+	<param name="android-package" value="org.apache.cordova.mqtt.MqTTPlugin" />
+      </feature>
+    </config-file>
+    <config-file parent="/*" target="AndroidManifest.xml"></config-file>
+    <source-file src="src/android/org.eclipse.paho.client.mqttv3_1.0.2.jar" target-dir="libs" framework="true" />
+    <source-file src="src/android/MqTTPlugin.java" target-dir="src/org/apache/cordova/mqtt" />
+  </platform>
+  <platform name="ios">
+    <config-file target="config.xml" parent="/*">
+      <feature name="MqTTPlugin">
+        <param name="ios-package" value="MqTTPlugin"/>
+      </feature>
+    </config-file>
+    <framework src="src/ios/MQTTClient.framework" custom="true"/>
+    <header-file src="src/ios/MqTTPlugin.h" />
+    <source-file src="src/ios/MqTTPlugin.m" />
+  </platform>
+</plugin>
