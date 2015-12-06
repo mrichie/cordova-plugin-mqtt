@@ -52,6 +52,14 @@
     }];
 }
 
+- (void) unsubscribe:(CDVInvokedUrlCommand *)command{
+    NSString* topicName = [command.arguments objectAtIndex:0];
+    [session unsubscribeTopic:topicName];
+    CDVPluginResult* pluginResult = nil;
+    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
 - (void) disconnect:(CDVInvokedUrlCommand *)command{
     [session close];
 }

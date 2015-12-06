@@ -12,6 +12,10 @@ exports.subscribe = function(args, success, error){
     exec(success, error, "MqTTPlugin", "subscribe", [args.topicName, args.qos]);
 };
 
+exports.unsubscribe = function(args, success, error){
+    exec(success, error, "MqTTPlugin", "unsubscribe", [args.topicName]);
+};
+
 exports.disconnect = function(success, error){
     exec(success, error, "MqTTPlugin", "disconnect", []);
 };

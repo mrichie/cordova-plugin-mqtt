@@ -65,6 +65,10 @@ public class MqTTPlugin extends CordovaPlugin implements MqttCallback {
             this.subscribe(args, callbackContext);
             return true;
         }
+        if (action.equals("unsubscribe")) {
+            this.unsubscribe(args, callbackContext);
+            return true;
+        }
         if (action.equals("disconnect")) {
             this.disconnect(callbackContext);
             return true;
@@ -177,6 +181,20 @@ public class MqTTPlugin extends CordovaPlugin implements MqttCallback {
                 }
             }
         });
+    }
+
+    private void unsubscribe(final JSONArray args, final CallbackContext cbctx) throws JSONException {
+        final String topicName = args.getString(0);
+        cordova.getThreadPool().execute(new Runnable() {
+		public void run() {
+		    try {
+			client.unsubscribe(topicName);
+			cbctx.success();
+		    } catch (MqttException me) {
+			cbctx.error(me.getMessage());
+		    }
+		}
+	    });
     }
 
     private void disconnect(final CallbackContext cbctx) throws JSONException {
