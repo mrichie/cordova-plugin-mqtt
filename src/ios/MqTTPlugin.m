@@ -13,8 +13,12 @@
 
     [session setDelegate:self];
     session.cleanSessionFlag = cleanSession;
-    session.userName = userName;
-    session.password = password;
+    if(!userName){
+	session.userName = userName;
+    }
+    if(!password){
+	session.password = password;
+    }
     [session connectAndWaitToHost:url port:1883 usingSSL:NO];
     
 }
@@ -59,7 +63,6 @@
                qos:(MQTTQosLevel)qos
           retained:(BOOL)retained
                mid:(unsigned int)mid {
-    CDVPluginResult *result;
     NSDateFormatter *dateFormatter=[[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
     NSString * timestamp = [dateFormatter stringFromDate:[NSDate date]];
@@ -69,8 +72,10 @@
                             @"content": [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding],
                             @"qos": [NSNumber numberWithInt:qos]
                         };
-    result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:info];
-    [result setKeepCallbackAsBool:YES];
-    [self.commandDelegate sendPluginResult:result callbackId:self.subCallbackId];
+
+    NSError *error;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:info options:0 error:&error];
+    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    [self.commandDelegate evalJs:[NSString stringWithFormat:@"cordova.plugins.mqtt.onMessage(%@);", jsonString]];
 }
 @end

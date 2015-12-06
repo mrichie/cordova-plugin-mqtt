@@ -10,6 +10,7 @@ import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.PluginResult;
+import org.apache.cordova.CordovaWebView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -261,11 +262,13 @@ public class MqTTPlugin extends CordovaPlugin implements MqttCallback {
                 "  QoS:\t" + message.getQos());
 
         JSONObject info = getInfo(topic, message);
-        if (this.subscribecbctx != null) {
-            PluginResult result = new PluginResult(PluginResult.Status.OK, info);
-            result.setKeepCallback(true);
-            this.subscribecbctx.sendPluginResult(result);
-        }
+	final String jsonString = info.toString();
+        final CordovaWebView webView_ = webView;
+        cordova.getActivity().runOnUiThread(new Runnable() {
+		public void run() {
+		    webView_.loadUrl(String.format("javascript:cordova.plugins.mqtt.onMessage(%s);", jsonString));
+		}
+	    });
     }
 
     private JSONObject getInfo(String topic, MqttMessage message) {

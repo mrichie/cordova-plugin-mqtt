@@ -15,3 +15,7 @@ exports.subscribe = function(args, success, error){
 exports.disconnect = function(success, error){
     exec(success, error, "MqTTPlugin", "disconnect", []);
 };
+
+exports.onMessage = function(data){
+
+};
